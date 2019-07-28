@@ -1,0 +1,114 @@
+Introduction to Singleton Design Pattern :
+-----------------------------------------
+
+Defination : 
+Singleton design pattern is a creational design pattern and one of the main design pattern to learn, 
+it gives great flexibility over global variables, 
+but this design pattern should be build with good care otherwise developer may fall into lots of problem.
+
+And one of the main problem could be concurrency, when two or more threads are trying to access the same
+object which you created as singleton might end-up corrupting the data. SO one need to be very careful which 
+design Singleton Design Pattern.
+
+Requirements :
+-> One and only one instance.
+-> Global Access
+-> No Ownership
+-> Lazy Initilaization.
+
+
+Advantage :
+-> Save Memory : only one is required so why to create many.
+-> Single Acess Point : Logger, Database Connection
+-> Flexibility : Change anytime you want to.
+
+Usage :
+-> Multithreaded : Threadpool -
+-> Database Application : logging.
+-> Configuration Settings : game settings, application settings, etc
+
+How to create :
+Sinlgeton class must have :
+1. Static Member.
+2. Private Constructor.
+3. Static Function.
+
+Example 1 :
+------------------------------------------------------
+#include <iostream>
+using namespace std;
+
+class System{
+private:
+    static System *obj;
+
+public:
+    static System &getInstance(){
+     static System theInstance;
+     return theInstance;
+    }
+
+    void prn(){
+        cout<<"this works!"<< endl;
+    }
+};
+
+int main(){
+    System &sys = System::getInstance();
+    sys.prn();
+}
+----------------------------------------------------------------
+#include<iostream>
+#include<string>
+using namespace std;
+
+class GameSetting {
+private:
+    static GameSetting* _instance;
+    int _brigthness;
+    int _width;
+    int _height;
+    GameSetting() : _brigthness(80), _width(700), _height(200){}
+
+public:
+    static GameSetting* getInstance() {
+        if(_instance == nullptr)
+            _instance = new GameSetting();
+        return _instance;
+    }
+    void setWidth(int width) {_width = width;}
+    void setHeight(int height){_height = height;}
+    void setBrightness(int brigthness) {_brigthness = brigthness;}
+
+    int getWidth(){return _width;}
+    int getHeight(){return  _height;}
+    int getBrightness(){return _brigthness;}
+    void displaySettings(){
+        cout << "briightness:"<< _brigthness << endl;
+        cout << "width:"<< _width << endl;
+        cout << "height:"<< _height << endl;
+    }
+};
+
+GameSetting * GameSetting::_instance = nullptr;
+
+
+void someFunction()
+{
+    GameSetting *setting = GameSetting::getInstance();
+    setting->displaySettings();
+}
+
+int main()
+{
+    GameSetting *setting = GameSetting::getInstance(); // NOTE: no new instance is created.
+    setting->displaySettings();
+    cout << " \n ** Calling again with other function, but we will use same instances ** \n"<< endl;
+    setting->setBrightness(1);
+    setting->setWidth(2);
+    setting->setHeight(3);
+    someFunction();
+    cout << endl;
+    return  0;
+}
+--------------------------------------------------------
