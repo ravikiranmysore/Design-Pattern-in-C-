@@ -1,0 +1,164 @@
+/*
+Factory Design Pattern : 
+1. it creates object for you, rather you initiating object directly.
+2.FDP is also known as "Virtual Constructor"(there is none in C++)
+
+How to implement it:
+Define an interface or an abstract class for creating an object but let
+the subclasses decide which class to initiate.
+
+Advantages:
+1.Less code change if we change object creation process.
+2.We create object without exposing creation logic to client.
+3. we get the benefits of virtual constructor.
+
+*/ Source.cpp
+#ifndef  __io__
+#define __io__
+
+#include<iostream>
+using namespace std;
+#endif
+
+#include "ToyFactory.cpp"
+
+int main()
+{
+	int type;
+	while (1)
+	{
+		cout << endl << "Enter type or Zero to exit" << endl;
+		cin >> type;
+
+		if (!type)
+			break;
+		Toy* v = ToyFactory::createToy(type);
+		if (v)
+		{
+			v->showProduct();
+			delete v;
+		}
+	}
+
+	cout << " Exit .. " << endl;
+	return 0;
+}
+----------------------------------------------------------------------
+// this is ToyFactory.cpp
+
+#include "Object.cpp"
+
+class ToyFactory {
+public:
+	static Toy* createToy(int type)
+	{
+		Toy* toy = NULL;
+
+		switch (type)
+		{
+		case 1:
+		{
+			toy = new Car;
+			break;
+		}
+		case 2:
+		{
+			toy = new Bike;
+			break;
+		}
+		case 3:
+		{
+			toy = new Plane;
+			break;
+		}
+		default:
+		{
+			cout << "Invalid toy type please re enter  type" << endl;
+			return NULL;
+		}
+		}
+
+		toy->prepareParts();
+		toy->combineParts();
+		toy->assembleParts();
+		toy->applyLabel();
+
+		return toy;
+	}
+};
+----------------------------------------------------------------------
+// this is Object.cpp
+
+#ifndef  __io__
+#define __io__
+
+#include<iostream>
+using namespace std;
+
+#endif
+
+class Toy {
+protected:
+	string name;
+	float price;
+public:
+	virtual void prepareParts() = 0;
+	virtual void combineParts() = 0;
+	virtual void assembleParts() = 0;
+	virtual void applyLabel() = 0;
+	virtual void showProduct() = 0;
+};
+
+class Car : public Toy
+{
+public:
+	void prepareParts() { cout << "Preparing Car parts" << endl; }
+	void combineParts() { cout << "Combine car parts" << endl; }
+	void assembleParts() { cout << "Assembling car parts" << endl; }
+	void applyLabel()
+	{
+		cout << "Applying car Label" << endl;
+		name = "Car ";
+		price = 10.00;
+	}
+	void showProduct()
+	{
+		cout << "Name : " << name << endl
+			<< "price : " << price  << endl;
+	}
+};
+class Bike : public Toy {
+public:
+	void prepareParts() { cout << "Preparing Bike parts" << endl; }
+	void combineParts() { cout << "Combine Bike parts" << endl; }
+	void assembleParts() { cout << "Assembling Bike parts" << endl; }
+	void applyLabel()
+	{
+		cout << "Applying Bike Label" << endl;
+		name = "Bike"; 
+		price = 20.00;
+	}
+	void showProduct()
+	{
+		cout << "Name : " << name << endl
+			<< "price : " << price << endl;
+	}
+};
+class Plane : public Toy
+{
+public:
+	void prepareParts() { cout << "Preparing Plane parts" << endl; }
+	void combineParts() { cout << "Combine Plane parts" << endl; }
+	void assembleParts() { cout << "Assembling Plane parts" << endl; }
+	void applyLabel()
+	{
+		cout << "Applying Plane Label" << endl;
+		name = "Plane"; 
+		price = 30.00;
+	}
+	void showProduct()
+	{
+		cout << "Name : " << name << endl
+			<< "price : " << price << endl;
+	}
+};
