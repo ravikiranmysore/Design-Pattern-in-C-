@@ -1,0 +1,139 @@
+/*
+ODP : Observer Design Pattern
+
+Defines a one to many dependency between objects so that when one
+object changes states, all its dependents are notified and updated automatically.
+
+*/
+#include<iostream>
+#include<vector>
+#include<algorithm>
+// -1 0 1
+class Car // subject
+{
+	int position;
+	std::vector<class observer*>observerList;
+public:
+	int getPosition()
+	{
+		return position;
+	}
+	void setPosition(int newpos)
+	{
+		position = newpos;
+		notify();
+	}
+	void attach(observer* obs)
+	{
+		observerList.push_back(obs);
+	}
+	void detach(observer* obs)
+	{
+		observerList.erase(std::remove(observerList.begin(), observerList.end(), obs), observerList.end());
+	}
+	void notify();
+};
+class observer
+{
+	Car* _car;
+public:
+	observer(Car* car)
+	{
+		_car = car;
+		_car->attach(this);
+	}
+	virtual void update() = 0;
+protected:
+	Car* getCar()
+	{
+		return _car;
+	}
+};
+void Car::notify()
+{
+	if (observerList.empty())
+		return;
+	for (int i = 0; i < observerList.size(); ++i)
+	{
+		observerList[i]->update();
+	}
+}
+class LeftObserver :public observer
+{
+public: LeftObserver(Car* car) :observer(car) {}
+		void update()
+		{
+			int pos = getCar()->getPosition();
+			if (pos < 0)
+			{
+				std::cout << "Left side" << "\n";
+			}
+		}
+};
+class RightObserver : public  observer
+{
+public: RightObserver(Car* car) :observer(car) {}
+		void update()
+		{
+			int pos = getCar()->getPosition();
+			if (pos > 0)
+			{
+				std::cout << "Right side" << "\n";
+			}
+		}
+};
+class Middleobserver : public observer
+{
+public: Middleobserver(Car* car) :observer(car) {}
+		void update()
+		{
+			int pos = getCar()->getPosition();
+			if (pos == 0)
+			{
+				std::cout << "Middle side" << "\n";
+			}
+		}
+};
+int main()
+{
+	Car* car = new Car(); //subject
+	LeftObserver letObserver(car);   // one to many relationship
+	RightObserver rigthObserver(car);
+	Middleobserver middleObsever(car);
+	std::cout << "hit l , r , c to drive a car,press Esc to close" << "\n";
+	char pressedButton;
+	bool breakLoop = false;
+	while (breakLoop == false)
+	{
+		std::cin >> pressedButton;
+		switch (pressedButton)
+		{
+		case 108: // l ->pressed for left
+		{
+			car->setPosition(-1);
+			break;
+		}
+		case 99: // c ->pressed for middle 
+		{
+			car->setPosition(0);
+			break;
+		}
+		case 114: //  r ->pressed for right
+		{
+			car->setPosition(1);
+			break;
+		}
+		case 98: // b ->pressed for left
+		{
+			breakLoop = true;
+			break;
+		}
+		default:
+		{
+			std::cout << "please drive carefully" << std::endl;
+			break;
+		}
+		}
+	}
+	std::cout << "Bye" << "\n";
+}
