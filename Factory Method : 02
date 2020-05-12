@@ -1,0 +1,125 @@
+#include <iostream>
+#include <string>
+#include <string.h>
+using namespace std;
+
+class Cup
+{
+protected:
+    char _type[15];
+public:
+    char *getType()
+    {
+        return _type;
+    }
+};
+
+// CONCRETE class
+class Essperso : public Cup
+{
+public:
+    Essperso()
+    {
+        strcpy(_type, "Essperso");
+        cout << "Making a cup of Essperso" << endl;
+    }
+};
+class Cappacinno : public Cup
+{
+public:
+    Cappacinno()
+    {
+        strcpy(_type, "Cappacinno");
+        cout << "Making a cup of Cappacinno" << endl;
+    }
+};
+class Latte : public Cup
+{
+public:
+    Latte()
+    {
+        strcpy(_type, "Latte");
+        cout << "Making a cup of Latte" << endl;
+    }
+};
+// if any new flavor, you can just add it here,
+
+
+// Coffee Maker -  which is a Factory
+class CoffeMakerFactory
+{
+private:
+    Cup *cup;
+public:
+    Cup * pourCoffee()
+    {
+        int choice;
+        cout << "Select type - " << endl;
+        cout << "1.Esspreso : " << endl;
+        cout << "2.Cappicino : " << endl;
+        cout << "3.Latte : " << endl;
+        cin >> choice;
+
+        switch(choice)
+        {
+            case 1:
+                return new Essperso;
+            case 2:
+                return new Cappacinno;
+                // add new method here
+            case 3:
+                return new Latte;
+            default:
+                cout << "INvalid Selection " << endl;
+                return NULL;
+        }
+    }
+};
+
+class Factory
+{
+public:
+    void Essperso()
+    {
+        cout << "Made an Esspreso";
+    }
+    void Cappacinno()
+    {
+        cout << "Made an Cappicino";
+    }
+    // add new method, if yo wish to extent it.
+};
+
+
+int main()
+{
+    cout << "===========without factory===========================" << endl;
+    int choice;
+    cout << "Select type - " << endl;
+    cout << "1.Esspreso : " << endl;
+    cout << "2.Cappicino : " << endl;
+    cin >> choice;
+
+    Factory *nf = new Factory;
+
+    switch (choice)
+    {
+    case 1:
+         nf->Essperso();
+    case 2:
+         nf->Cappacinno();
+    default:
+        break;
+    }
+
+    cout << "\n\n===========with factory===========================" << endl;
+
+    CoffeMakerFactory cfm;
+    Cup *cup;
+    //cup.getType();
+    cup = cfm.pourCoffee();
+
+    cout << "you had asked for " << cup->getType() << endl;
+    // Note you have nothing to do here, its already taken care by concreate methods for latte
+    return 0;
+}
